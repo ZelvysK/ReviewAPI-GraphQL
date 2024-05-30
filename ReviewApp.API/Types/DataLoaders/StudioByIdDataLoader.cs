@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ReviewApp.API.Types.Base;
 
 namespace ReviewApp.API.Types.DataLoaders;
 

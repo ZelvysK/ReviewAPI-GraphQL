@@ -1,17 +1,27 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>6d87d185-f4bb-4fbe-b1b4-b45b3be7fa5a</UserSecretsId>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="HotChocolate.AspNetCore" Version="13.9.0" />
-        <PackageReference Include="HotChocolate.Data.EntityFramework" Version="13.9.0" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2" />
+        <PackageReference Include="FirebaseAdminAuthentication.DependencyInjection" Version="1.1.0"/>
+        <PackageReference Include="HotChocolate.AspNetCore" Version="13.9.5"/>
+        <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="13.9.5"/>
+        <PackageReference Include="HotChocolate.Data.EntityFramework" Version="13.9.5"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2"/>
+        <PackageReference Include="RestSharp" Version="111.2.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
-
 </Project>

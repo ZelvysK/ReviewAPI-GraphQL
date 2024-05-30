@@ -1,7 +1,9 @@
-﻿using ReviewApp.API.Types.Enums;
+﻿using HotChocolate.Authorization;
+using ReviewApp.API.Types.Enums;
 
-namespace ReviewApp.API.Types;
+namespace ReviewApp.API.Types.Base;
 
+[Authorize]
 public class Studio
 {
     public Guid Id { get; set; }

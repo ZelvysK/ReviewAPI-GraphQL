@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HotChocolate.Authorization;
 using ReviewApp.API.Types.DataLoaders;
 using ReviewApp.API.Types.Enums;
 
-namespace ReviewApp.API.Types;
+namespace ReviewApp.API.Types.Base;
 
+[Authorize]
 public class Media
 {
     public Guid Id { get; set; }

@@ -1,29 +1,13 @@
+using HotChocolate.Authorization;
+using ReviewApp.API.Types.Base;
 using ReviewApp.API.Types.Inputs;
 
-namespace ReviewApp.API.Types;
+namespace ReviewApp.API.Types.Mutations;
 
-public class Mutation
+[ExtendObjectType(Name = Constants.Mutation)]
+public class MediaMutations
 {
-    public async Task<Studio> CreateStudio(ReviewContext context, CreateStudioInput input)
-    {
-        var studio = new Studio
-        {
-            Name = input.Name,
-            Description = input.Description,
-            ImageUrl = input.ImageUrl,
-            Headquarters = input.Headquarters,
-            Founder = input.Founder,
-            DateCreated = input.DateFounded,
-            Type = input.Type
-        };
-
-        context.Studios.Add(studio);
-
-        await context.SaveChangesAsync();
-
-        return studio;
-    }
-
+    [Authorize]
     public async Task<Media> CreateMedia(ReviewContext context, CreateMediaInput input)
     {
         var media = new Media
