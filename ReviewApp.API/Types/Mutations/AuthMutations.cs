@@ -1,5 +1,7 @@
 using RestSharp;
+using ReviewApp.API.Errors;
 using ReviewApp.API.Types.Auth;
+using ReviewApp.API.Types.Base;
 using ReviewApp.API.Types.Inputs;
 
 namespace ReviewApp.API.Types.Mutations;
@@ -10,6 +12,7 @@ public class AuthMutations
     [UseMutationConvention(PayloadFieldName = "auth")]
     public async Task<FirebaseRegisterResponse?> SignUp(
         [Service] SecretManager secretManager,
+        ReviewContext context,
         SignUpInput input
     )
     {
@@ -27,6 +30,26 @@ public class AuthMutations
             );
 
         var response = await client.PostAsync<FirebaseRegisterResponse>(req);
+
+        if (response is null)
+        {
+            throw new FailedToSignUpError();
+        }
+
+        context.Users.Add(
+            new User
+            {
+                Name = input.DisplayName,
+                Email = input.Email,
+                RemoteId = response.LocalId,
+                Role = UserRole.User
+            }
+        );
+
+        if (await context.SaveChangesAsync() > 0 is false)
+        {
+            throw new FailedToSaveChangesError();
+        }
 
         return response;
     }

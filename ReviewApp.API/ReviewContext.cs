@@ -7,9 +7,6 @@ namespace ReviewApp.API;
 
 public class ReviewContext(DbContextOptions<ReviewContext> options) : DbContext(options)
 {
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
-        optionsBuilder.UseNpgsql("Host=my_host;Database=my_db;Username=my_user;Password=my_pw");
-
     public DbSet<Studio> Studios { get; set; }
     public DbSet<Media> Media { get; set; }
 
