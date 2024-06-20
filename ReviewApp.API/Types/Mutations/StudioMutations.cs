@@ -1,17 +1,25 @@
 using HotChocolate.Authorization;
 using Microsoft.EntityFrameworkCore;
 using ReviewApp.API.Errors;
+using ReviewApp.API.Extensions;
 using ReviewApp.API.Types.Base;
 using ReviewApp.API.Types.Inputs;
+using ReviewApp.API.Types.Queries;
 
 namespace ReviewApp.API.Types.Mutations;
 
-[ExtendObjectType(Name = Constants.Mutation)]
+[MutationType]
 public class StudioMutations
 {
     [Authorize]
-    public async Task<Studio> CreateStudio(ReviewContext context, CreateStudioInput input)
+    public async Task<Studio> CreateStudio(
+        ReviewContext reviewContext,
+        CreateStudioInput input,
+        ResolverContext context
+    )
     {
+        var userId = context.GetUserId();
+
         var studio = new Studio
         {
             Name = input.Name,
@@ -19,25 +27,32 @@ public class StudioMutations
             ImageUrl = input.ImageUrl,
             Headquarters = input.Headquarters,
             Founder = input.Founder,
-            DateCreated = input.DateFounded,
-            Type = input.Type
+            Type = input.Type,
+            CreatedAt = DateTime.UtcNow,
+            CreatedBy = userId.ToString(),
         };
 
-        context.Studios.Add(studio);
+        reviewContext.Studios.Add(studio);
 
-        await context.SaveChangesAsync();
+        await reviewContext.SaveChangesAsync();
 
         return studio;
     }
 
     [Authorize]
-    public async Task<Studio> UpdateStudio(ReviewContext context, UpdateStudioInput input)
+    public async Task<Studio> UpdateStudio(
+        ReviewContext reviewContext,
+        UpdateStudioInput input,
+        ResolverContext context
+    )
     {
-        var studio = await context.Studios.FirstOrDefaultAsync(s => s.Id == input.Id);
+        var userId = context.GetUserId();
+
+        var studio = await reviewContext.Studios.FirstOrDefaultAsync(s => s.Id == input.Id);
 
         if (studio is null)
         {
-            throw new StudioNotFoundError();
+            throw new EntityNotFoundException(nameof(Studio));
         }
 
         studio.Name = input.Name;
@@ -45,10 +60,11 @@ public class StudioMutations
         studio.ImageUrl = input.ImageUrl;
         studio.Headquarters = input.Headquarters;
         studio.Founder = input.Founder;
-        studio.DateCreated = input.DateFounded;
         studio.Type = input.Type;
+        studio.ModifiedAt = DateTime.UtcNow;
+        studio.ModifiedBy = userId.ToString();
 
-        await context.SaveChangesAsync();
+        await reviewContext.SaveChangesAsync();
 
         return studio;
     }
@@ -60,7 +76,7 @@ public class StudioMutations
 
         if (studio is null)
         {
-            throw new StudioNotFoundError();
+            throw new EntityNotFoundException(nameof(Studio));
         }
 
         context.Studios.Remove(studio);

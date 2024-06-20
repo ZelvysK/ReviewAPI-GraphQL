@@ -1,17 +1,25 @@
 using HotChocolate.Authorization;
 using Microsoft.EntityFrameworkCore;
 using ReviewApp.API.Errors;
+using ReviewApp.API.Extensions;
 using ReviewApp.API.Types.Base;
 using ReviewApp.API.Types.Inputs;
+using ReviewApp.API.Types.Queries;
 
 namespace ReviewApp.API.Types.Mutations;
 
-[ExtendObjectType(Name = Constants.Mutation)]
+[MutationType]
 public class MediaMutations
 {
     [Authorize]
-    public async Task<Media> CreateMedia(ReviewContext context, CreateMediaInput input)
+    public async Task<Media> CreateMedia(
+        ReviewContext reviewContext,
+        CreateMediaInput input,
+        ResolverContext context
+    )
     {
+        var userId = context.GetUserId();
+
         var media = new Media
         {
             MediaType = input.MediaType,
@@ -20,26 +28,32 @@ public class MediaMutations
             CoverImageUrl = input.CoverImageUrl,
             Description = input.Description,
             StudioId = input.StudioId,
-            PublishedBy = input.PublishedBy,
-            DateCreated = input.DateFounded,
-            DatePosted = DateTime.Now
+            DateFounded = input.DateFounded,
+            CreatedAt = DateTime.UtcNow,
+            CreatedBy = userId.ToString(),
         };
 
-        context.Media.Add(media);
+        reviewContext.Media.Add(media);
 
-        await context.SaveChangesAsync();
+        await reviewContext.SaveChangesAsync();
 
         return media;
     }
 
     [Authorize]
-    public async Task<Media> UpdateMedia(ReviewContext context, UpdateMediaInput input)
+    public async Task<Media> UpdateMedia(
+        ReviewContext reviewContext,
+        UpdateMediaInput input,
+        ResolverContext context
+    )
     {
-        var media = await context.Media.FirstOrDefaultAsync(m => m.Id == input.Id);
+        var userId = context.GetUserId();
+
+        var media = await reviewContext.Media.FindAsync(input.Id);
 
         if (media is null)
         {
-            throw new MediaNotFoundError();
+            throw new EntityNotFoundException(nameof(Media));
         }
 
         media.MediaType = input.MediaType;
@@ -48,10 +62,11 @@ public class MediaMutations
         media.CoverImageUrl = input.CoverImageUrl;
         media.Description = input.Description;
         media.StudioId = input.StudioId;
-        media.PublishedBy = input.PublishedBy;
-        media.DateCreated = input.DateFounded;
+        media.DateFounded = input.DateFounded;
+        media.ModifiedAt = DateTime.UtcNow;
+        media.ModifiedBy = userId.ToString();
 
-        await context.SaveChangesAsync();
+        await reviewContext.SaveChangesAsync();
 
         return media;
     }
@@ -63,7 +78,7 @@ public class MediaMutations
 
         if (media is null)
         {
-            throw new MediaNotFoundError();
+            throw new EntityNotFoundException(nameof(Media));
         }
 
         context.Media.Remove(media);

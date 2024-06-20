@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using ReviewApp.API;
 using ReviewApp.API.Extensions;
-using ReviewApp.API.Types;
-using ReviewApp.API.Types.Mutations;
-using ReviewApp.API.Types.Queries;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<ResolverContext>();
 
 builder.Configuration.AddUserSecrets<Program>();
 
@@ -22,16 +22,12 @@ builder.Services.AddScoped<SecretManager>();
 
 builder
     .Services.AddGraphQLServer()
-    .AddQueryType(d => d.Name(Constants.Query))
-    .AddTypeExtension<MeQueries>()
-    .AddTypeExtension<StudioQueries>()
-    .AddTypeExtension<MediaQueries>()
+    .AddQueryType()
+    .AddMutationType()
     .AddMutationConventions()
-    .AddMutationType(d => d.Name(Constants.Mutation))
-    .AddTypeExtension<AuthMutations>()
-    .AddTypeExtension<StudioMutations>()
-    .AddTypeExtension<MediaMutations>()
+    .AddAPITypes()
     .AddHttpRequestInterceptor<HttpRequestInterceptor>()
+    .RegisterService<ResolverContext>()
     .RegisterDbContext<ReviewContext>()
     .AddAuthorization();
 

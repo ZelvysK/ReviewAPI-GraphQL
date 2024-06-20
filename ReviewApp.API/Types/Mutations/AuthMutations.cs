@@ -6,7 +6,7 @@ using ReviewApp.API.Types.Inputs;
 
 namespace ReviewApp.API.Types.Mutations;
 
-[ExtendObjectType(Name = Constants.Mutation)]
+[MutationType]
 public class AuthMutations
 {
     [UseMutationConvention(PayloadFieldName = "auth")]
@@ -36,20 +36,22 @@ public class AuthMutations
             throw new FailedToSignUpError();
         }
 
+        var userId = Guid.NewGuid();
+
         context.Users.Add(
             new User
             {
+                Id = userId,
                 Name = input.DisplayName,
                 Email = input.Email,
                 RemoteId = response.LocalId,
-                Role = UserRole.User
+                Role = UserRole.User,
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = "System"
             }
         );
 
-        if (await context.SaveChangesAsync() > 0 is false)
-        {
-            throw new FailedToSaveChangesError();
-        }
+        await context.SaveChangesAsync();
 
         return response;
     }

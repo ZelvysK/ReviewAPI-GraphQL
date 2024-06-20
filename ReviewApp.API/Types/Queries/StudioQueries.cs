@@ -4,7 +4,7 @@ using ReviewApp.API.Types.Base;
 
 namespace ReviewApp.API.Types.Queries;
 
-[ExtendObjectType(Name = Constants.Query)]
+[QueryType]
 public class StudioQueries
 {
     [Authorize]
