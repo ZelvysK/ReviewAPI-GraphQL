@@ -9,7 +9,7 @@ public class StudioQueries
 {
     [Authorize]
     [UseOffsetPaging]
-    public IQueryable<Studio> GetStudios(ReviewContext context, ClaimsPrincipal claimsPrincipal)
+    public IQueryable<Studio> GetStudios(ReviewContext context)
     {
         return context.Studios.AsQueryable();
     }

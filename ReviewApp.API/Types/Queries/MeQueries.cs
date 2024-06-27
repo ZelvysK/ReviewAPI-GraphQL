@@ -1,4 +1,3 @@
-using HotChocolate.Authorization;
 using Microsoft.EntityFrameworkCore;
 using ReviewApp.API.Errors;
 using ReviewApp.API.Extensions;
@@ -9,7 +8,6 @@ namespace ReviewApp.API.Types.Queries;
 [QueryType]
 public class MeQueries
 {
-    [Authorize(Roles = [Roles.Admin])]
     public async Task<User> Me(ReviewContext reviewContext, ResolverContext context)
     {
         var userId = context.GetUserId();

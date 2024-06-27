@@ -16,7 +16,9 @@ public class ReviewContext(DbContextOptions<ReviewContext> options) : DbContext(
     {
         modelBuilder.Entity<Studio>(entity =>
         {
-            entity.Property(e => e.Type).HasConversion(new EnumToStringConverter<StudioType>());
+            entity
+                .Property(e => e.StudioType)
+                .HasConversion(new EnumToStringConverter<StudioType>());
         });
 
         modelBuilder.Entity<Media>(entity =>

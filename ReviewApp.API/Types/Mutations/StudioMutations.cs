@@ -4,7 +4,6 @@ using ReviewApp.API.Errors;
 using ReviewApp.API.Extensions;
 using ReviewApp.API.Types.Base;
 using ReviewApp.API.Types.Inputs;
-using ReviewApp.API.Types.Queries;
 
 namespace ReviewApp.API.Types.Mutations;
 
@@ -27,7 +26,8 @@ public class StudioMutations
             ImageUrl = input.ImageUrl,
             Headquarters = input.Headquarters,
             Founder = input.Founder,
-            Type = input.Type,
+            StudioType = input.StudioType,
+            DateEstablished = input.DateEstablished,
             CreatedAt = DateTime.UtcNow,
             CreatedBy = userId.ToString(),
         };
@@ -60,7 +60,9 @@ public class StudioMutations
         studio.ImageUrl = input.ImageUrl;
         studio.Headquarters = input.Headquarters;
         studio.Founder = input.Founder;
-        studio.Type = input.Type;
+        studio.StudioType = input.StudioType;
+        studio.DateEstablished = input.DateEstablished;
+
         studio.ModifiedAt = DateTime.UtcNow;
         studio.ModifiedBy = userId.ToString();
 

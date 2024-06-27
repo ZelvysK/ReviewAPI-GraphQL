@@ -3,6 +3,7 @@ using ReviewApp.API.Errors;
 using ReviewApp.API.Types.Auth;
 using ReviewApp.API.Types.Base;
 using ReviewApp.API.Types.Inputs;
+using ReviewApp.API.Types.Payloads;
 
 namespace ReviewApp.API.Types.Mutations;
 
@@ -10,7 +11,7 @@ namespace ReviewApp.API.Types.Mutations;
 public class AuthMutations
 {
     [UseMutationConvention(PayloadFieldName = "auth")]
-    public async Task<FirebaseRegisterResponse?> SignUp(
+    public async Task<AuthData?> SignUp(
         [Service] SecretManager secretManager,
         ReviewContext context,
         SignUpInput input
@@ -53,14 +54,11 @@ public class AuthMutations
 
         await context.SaveChangesAsync();
 
-        return response;
+        return new AuthData(response.IdToken, response.RefreshToken);
     }
 
     [UseMutationConvention(PayloadFieldName = "auth")]
-    public async Task<FirebaseLoginResponse?> SignIn(
-        [Service] SecretManager secretManager,
-        SignInInput input
-    )
+    public async Task<AuthData?> SignIn([Service] SecretManager secretManager, SignInInput input)
     {
         var client = new RestClient(
             "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
@@ -79,6 +77,11 @@ public class AuthMutations
 
         var response = await client.PostAsync<FirebaseLoginResponse>(req);
 
-        return response;
+        if (response is null)
+        {
+            throw new UnauthorizedAccessException();
+        }
+
+        return new AuthData(response.IdToken, response.RefreshToken);
     }
 }
