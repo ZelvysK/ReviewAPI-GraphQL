@@ -15,6 +15,7 @@ public class Media : ICreatable, IModifiable
     public string? Description { get; set; }
     public required Guid StudioId { get; set; }
 
+    // TODO: This changes to DateEstablished
     public required DateOnly DateFounded { get; set; }
 
     [GraphQLIgnore]

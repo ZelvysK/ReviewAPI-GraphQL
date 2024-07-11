@@ -30,6 +30,12 @@ public class StudioQueries
             query = query.Where(x => x.StudioType == input.StudioType);
         }
 
-        return query;
+        return query.OrderByDescending(x => x.CreatedAt);
+    }
+
+    [Authorize]
+    public Studio? GetStudioById(ReviewContext context, Guid id)
+    {
+        return context.Studios.AsNoTracking().FirstOrDefault(x => x.Id == id);
     }
 }

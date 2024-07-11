@@ -74,7 +74,7 @@ public class StudioMutations
     [Authorize]
     public async Task<Studio> DeleteStudio(ReviewContext context, Guid id)
     {
-        var studio = await context.Studios.FirstOrDefaultAsync(s => s.Id == id);
+        var studio = await context.Studios.FindAsync(id);
 
         if (studio is null)
         {
