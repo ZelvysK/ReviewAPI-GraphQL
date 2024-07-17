@@ -4,7 +4,6 @@ using ReviewApp.API.Errors;
 using ReviewApp.API.Extensions;
 using ReviewApp.API.Types.Base;
 using ReviewApp.API.Types.Inputs;
-using ReviewApp.API.Types.Queries;
 
 namespace ReviewApp.API.Types.Mutations;
 
@@ -28,7 +27,7 @@ public class MediaMutations
             CoverImageUrl = input.CoverImageUrl,
             Description = input.Description,
             StudioId = input.StudioId,
-            DateFounded = input.DateFounded,
+            DateEstablished = input.DateEstablished,
             CreatedAt = DateTime.UtcNow,
             CreatedBy = userId.ToString(),
         };
@@ -62,7 +61,8 @@ public class MediaMutations
         media.CoverImageUrl = input.CoverImageUrl;
         media.Description = input.Description;
         media.StudioId = input.StudioId;
-        media.DateFounded = input.DateFounded;
+        media.DateEstablished = input.DateEstablished;
+
         media.ModifiedAt = DateTime.UtcNow;
         media.ModifiedBy = userId.ToString();
 

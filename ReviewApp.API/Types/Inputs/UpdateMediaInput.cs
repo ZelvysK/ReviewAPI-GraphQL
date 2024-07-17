@@ -11,6 +11,5 @@ public class UpdateMediaInput
     public required string CoverImageUrl { get; set; }
     public required string Description { get; set; }
     public required Guid StudioId { get; set; }
-    public required string PublishedBy { get; set; }
-    public required DateOnly DateFounded { get; set; }
+    public required DateOnly DateEstablished { get; set; }
 }

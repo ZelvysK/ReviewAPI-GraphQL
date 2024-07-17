@@ -9,5 +9,5 @@ public record CreateMediaInput(
     string? CoverImageUrl,
     string? Description,
     Guid StudioId,
-    DateOnly DateFounded
+    DateOnly DateEstablished
 );

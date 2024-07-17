@@ -11,6 +11,7 @@ namespace ReviewApp.API.Types.Mutations;
 public class StudioMutations
 {
     [Authorize]
+    [Error(typeof(EntityByNameAlreadyExistsError))]
     public async Task<Studio> CreateStudio(
         ReviewContext reviewContext,
         CreateStudioInput input,
@@ -18,6 +19,15 @@ public class StudioMutations
     )
     {
         var userId = context.GetUserId();
+
+        var studioByName = await reviewContext.Studios.FirstOrDefaultAsync(s =>
+            s.Name == input.Name
+        );
+
+        if (studioByName is not null)
+        {
+            throw new EntityByNameAlreadyExistsError(input.Name);
+        }
 
         var studio = new Studio
         {

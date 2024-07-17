@@ -3,6 +3,7 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using ReviewApp.API;
+using ReviewApp.API.Errors;
 using ReviewApp.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ builder.Services.AddScoped<SecretManager>();
 
 builder
     .Services.AddGraphQLServer()
+    .AddErrorInterfaceType<IErrorWithCode>()
     .AddQueryType()
     .AddMutationType()
     .AddMutationConventions()

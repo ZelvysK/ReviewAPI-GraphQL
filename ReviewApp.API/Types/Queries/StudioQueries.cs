@@ -11,7 +11,7 @@ public record GetStudiosInput(string? Term, StudioType? StudioType);
 public class StudioQueries
 {
     [Authorize]
-    [UseOffsetPaging(IncludeTotalCount = true)]
+    [UseOffsetPaging(IncludeTotalCount = true, MaxPageSize = 10000)]
     public IQueryable<Studio> GetStudios(ReviewContext context, GetStudiosInput input)
     {
         var query = context.Studios.AsNoTracking().AsQueryable();
