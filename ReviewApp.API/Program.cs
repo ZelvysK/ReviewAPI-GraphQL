@@ -11,7 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors();
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddTransient<ResolverContext>();
 
 builder.Configuration.AddUserSecrets<Program>();
 
@@ -23,13 +22,11 @@ builder.Services.AddScoped<SecretManager>();
 
 builder
     .Services.AddGraphQLServer()
-    .AddErrorInterfaceType<IErrorWithCode>()
     .AddQueryType()
     .AddMutationType()
     .AddMutationConventions()
     .AddAPITypes()
     .AddHttpRequestInterceptor<HttpRequestInterceptor>()
-    .RegisterService<ResolverContext>()
     .RegisterDbContext<ReviewContext>()
     .AddAuthorization();
 

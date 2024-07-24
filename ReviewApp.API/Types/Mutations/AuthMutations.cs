@@ -11,6 +11,7 @@ namespace ReviewApp.API.Types.Mutations;
 public class AuthMutations
 {
     [UseMutationConvention(PayloadFieldName = "auth")]
+    [Error<GqException>]
     public async Task<AuthData?> SignUp(
         [Service] SecretManager secretManager,
         ReviewContext context,
@@ -34,7 +35,7 @@ public class AuthMutations
 
         if (response is null)
         {
-            throw new FailedToSignUpError();
+            throw new GqException(GqErrors.Auth.SignUpFailed);
         }
 
         var userId = Guid.NewGuid();
@@ -48,7 +49,7 @@ public class AuthMutations
                 RemoteId = response.LocalId,
                 Role = UserRole.User,
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = "System"
+                CreatedBy = RootConstants.SystemUserId
             }
         );
 
@@ -58,6 +59,7 @@ public class AuthMutations
     }
 
     [UseMutationConvention(PayloadFieldName = "auth")]
+    [Error<GqException>]
     public async Task<AuthData?> SignIn([Service] SecretManager secretManager, SignInInput input)
     {
         var client = new RestClient(
@@ -79,7 +81,7 @@ public class AuthMutations
 
         if (response is null)
         {
-            throw new UnauthorizedAccessException();
+            throw new GqException(GqErrors.Auth.SignInFailed);
         }
 
         return new AuthData(response.IdToken, response.RefreshToken);

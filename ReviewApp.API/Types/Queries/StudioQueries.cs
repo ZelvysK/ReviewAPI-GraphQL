@@ -18,11 +18,7 @@ public class StudioQueries
 
         if (string.IsNullOrWhiteSpace(input.Term) is false)
         {
-            query = query.Where(x =>
-                x.Name.Contains(input.Term)
-                || x.Description != null && x.Description.Contains(input.Term)
-                || x.Founder.Contains(input.Term)
-            );
+            query = query.Where(b => EF.Functions.ILike(b.Name, $"%{input.Term}%"));
         }
 
         if (input.StudioType is not null)

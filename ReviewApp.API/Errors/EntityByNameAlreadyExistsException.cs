@@ -1,15 +1,6 @@
 namespace ReviewApp.API.Errors;
 
-[GraphQLName("ErrorWithCode")]
-public interface IErrorWithCode
+public class GqException(string code, string? message = null) : Exception(message)
 {
-    string Code { get; }
-}
-
-public class EntityByNameAlreadyExistsError : Exception, IErrorWithCode
-{
-    public string Code { get; } = "ENTITY_NAME_EXISTS";
-
-    public EntityByNameAlreadyExistsError(string entityName)
-        : base($"An entity with the name '{entityName}' already exists.") { }
+    public string Code { get; } = code;
 }

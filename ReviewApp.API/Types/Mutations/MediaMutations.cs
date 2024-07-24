@@ -1,4 +1,5 @@
 using HotChocolate.Authorization;
+using HotChocolate.Resolvers;
 using Microsoft.EntityFrameworkCore;
 using ReviewApp.API.Errors;
 using ReviewApp.API.Extensions;
@@ -11,10 +12,11 @@ namespace ReviewApp.API.Types.Mutations;
 public class MediaMutations
 {
     [Authorize]
+    [Error<GqException>]
     public async Task<Media> CreateMedia(
         ReviewContext reviewContext,
         CreateMediaInput input,
-        ResolverContext context
+        IResolverContext context
     )
     {
         var userId = context.GetUserId();
@@ -40,10 +42,11 @@ public class MediaMutations
     }
 
     [Authorize]
+    [Error<GqException>]
     public async Task<Media> UpdateMedia(
         ReviewContext reviewContext,
         UpdateMediaInput input,
-        ResolverContext context
+        IResolverContext context
     )
     {
         var userId = context.GetUserId();
@@ -52,7 +55,7 @@ public class MediaMutations
 
         if (media is null)
         {
-            throw new EntityNotFoundException(nameof(Media));
+            throw new GqException(GqErrors.Entity.NotFound);
         }
 
         media.MediaType = input.MediaType;
@@ -72,13 +75,14 @@ public class MediaMutations
     }
 
     [Authorize]
+    [Error<GqException>]
     public async Task<Media> DeleteMedia(ReviewContext context, Guid id)
     {
         var media = await context.Media.FirstOrDefaultAsync(m => m.Id == id);
 
         if (media is null)
         {
-            throw new EntityNotFoundException(nameof(Media));
+            throw new GqException(GqErrors.Entity.NotFound);
         }
 
         context.Media.Remove(media);

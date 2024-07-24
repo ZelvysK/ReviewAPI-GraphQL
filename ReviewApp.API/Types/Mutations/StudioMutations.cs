@@ -1,4 +1,5 @@
 using HotChocolate.Authorization;
+using HotChocolate.Resolvers;
 using Microsoft.EntityFrameworkCore;
 using ReviewApp.API.Errors;
 using ReviewApp.API.Extensions;
@@ -11,11 +12,11 @@ namespace ReviewApp.API.Types.Mutations;
 public class StudioMutations
 {
     [Authorize]
-    [Error(typeof(EntityByNameAlreadyExistsError))]
+    [Error<GqException>]
     public async Task<Studio> CreateStudio(
         ReviewContext reviewContext,
         CreateStudioInput input,
-        ResolverContext context
+        IResolverContext context
     )
     {
         var userId = context.GetUserId();
@@ -26,7 +27,7 @@ public class StudioMutations
 
         if (studioByName is not null)
         {
-            throw new EntityByNameAlreadyExistsError(input.Name);
+            throw new GqException(GqErrors.Entity.AlreadyExists);
         }
 
         var studio = new Studio
@@ -50,10 +51,11 @@ public class StudioMutations
     }
 
     [Authorize]
+    [Error<GqException>]
     public async Task<Studio> UpdateStudio(
         ReviewContext reviewContext,
         UpdateStudioInput input,
-        ResolverContext context
+        IResolverContext context
     )
     {
         var userId = context.GetUserId();
@@ -62,7 +64,7 @@ public class StudioMutations
 
         if (studio is null)
         {
-            throw new EntityNotFoundException(nameof(Studio));
+            throw new GqException(GqErrors.Entity.NotFound);
         }
 
         studio.Name = input.Name;
@@ -82,13 +84,14 @@ public class StudioMutations
     }
 
     [Authorize]
+    [Error<GqException>]
     public async Task<Studio> DeleteStudio(ReviewContext context, Guid id)
     {
         var studio = await context.Studios.FindAsync(id);
 
         if (studio is null)
         {
-            throw new EntityNotFoundException(nameof(Studio));
+            throw new GqException(GqErrors.Entity.NotFound);
         }
 
         context.Studios.Remove(studio);

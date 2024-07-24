@@ -1,3 +1,5 @@
+using HotChocolate.Authorization;
+using HotChocolate.Resolvers;
 using Microsoft.EntityFrameworkCore;
 using ReviewApp.API.Errors;
 using ReviewApp.API.Extensions;
@@ -8,7 +10,9 @@ namespace ReviewApp.API.Types.Queries;
 [QueryType]
 public class MeQueries
 {
-    public async Task<User> Me(ReviewContext reviewContext, ResolverContext context)
+    [Authorize]
+    [Error<GqException>]
+    public async Task<User> Me(ReviewContext reviewContext, IResolverContext context)
     {
         var userId = context.GetUserId();
 
@@ -18,7 +22,7 @@ public class MeQueries
 
         if (user is null)
         {
-            throw new EntityNotFoundException(nameof(User));
+            throw new GqException(GqErrors.User.NotFound);
         }
 
         return user;
